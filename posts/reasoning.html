@@ -27,14 +27,13 @@
         html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
-            line-height: 1.72;
-            color: var(--ink-soft);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
             background: var(--surface);
-            max-width: 920px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 48px 28px;
-            font-size: 17px;
+            padding: 40px 20px;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -43,98 +42,84 @@
             color: var(--ink);
         }
 
-        /* ── Header ── */
+        /* ── Header (matches index.html) ── */
         header {
-            margin-bottom: 56px;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--rule);
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
         }
         .header-content {
             display: flex;
             align-items: center;
-            gap: 36px;
+            gap: 40px;
             margin-bottom: 20px;
         }
         .profile-photo {
-            width: 140px;
-            height: 140px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
-            border: 3px solid var(--rule-light);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         .header-text h1 {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 1.85em;
-            font-weight: 700;
-            color: var(--ink);
-            letter-spacing: -0.02em;
-            margin-bottom: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 2em;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
         }
         .header-text .subtitle {
-            font-family: 'DM Sans', sans-serif;
-            color: var(--ink-muted);
-            margin-bottom: 14px;
-            font-size: 0.95em;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #666;
+            margin-bottom: 12px;
+            font-size: 1.05em;
         }
         .links {
             display: flex;
-            gap: 16px;
+            gap: 15px;
             flex-wrap: wrap;
         }
         .links a {
-            font-family: 'DM Sans', sans-serif;
-            color: var(--accent);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #0066cc;
             text-decoration: none;
-            font-size: 0.88em;
-            font-weight: 500;
-            letter-spacing: 0.01em;
-            transition: opacity 0.2s;
+            font-size: 0.95em;
         }
-        .links a:hover { opacity: 0.7; }
+        .links a:hover { text-decoration: underline; }
 
         .secret-emoji { color: var(--surface); cursor: default; user-select: none; }
         .secret-emoji:hover { color: inherit; }
         .secret-emoji::after { content: ""; }
         .secret-emoji:hover::after { content: " ⚡🚗"; }
 
-        /* ── Nav ── */
+        /* ── Nav (matches index.html) ── */
         nav {
             margin-bottom: 40px;
-            display: flex;
-            gap: 28px;
         }
         nav a {
-            font-family: 'DM Sans', sans-serif;
-            color: var(--ink-muted);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #333;
             text-decoration: none;
+            margin-right: 25px;
             font-weight: 500;
-            font-size: 0.92em;
-            padding-bottom: 4px;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
         }
-        nav a:hover { color: var(--ink); }
+        nav a:hover { color: #0066cc; }
         nav a.active {
-            color: var(--accent);
-            border-bottom-color: var(--accent);
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 4px;
         }
 
         /* ── Back link ── */
         .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-family: 'DM Sans', sans-serif;
-            color: var(--ink-muted);
+            display: inline-block;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #0066cc;
             text-decoration: none;
-            font-size: 0.88em;
-            font-weight: 500;
-            margin-bottom: 36px;
-            transition: color 0.2s;
+            font-size: 0.9em;
+            margin-bottom: 32px;
         }
-        .back-link:hover { color: var(--accent); }
+        .back-link:hover { text-decoration: underline; }
 
         /* ── Article Meta ── */
         .article-tag {
@@ -151,7 +136,8 @@
             color: #fff;
         }
         .article-title {
-            font-size: 2.2em;
+            font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+            font-size: 2.1em;
             font-weight: 700;
             color: var(--ink);
             line-height: 1.25;
@@ -170,6 +156,9 @@
         /* ── Article Body ── */
         .article-body {
             max-width: 660px;
+            font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+            font-size: 17px;
+            line-height: 1.72;
         }
         .article-body p {
             color: var(--ink-soft);
@@ -384,9 +373,9 @@
         /* ── Responsive ── */
         @media (max-width: 600px) {
             .header-content { flex-direction: column; text-align: center; }
-            .profile-photo { width: 110px; height: 110px; }
+            .profile-photo { width: 120px; height: 120px; }
             .links { justify-content: center; }
-            nav { flex-wrap: wrap; gap: 16px; }
+            nav a { display: block; margin: 10px 0; }
             .article-title { font-size: 1.6em; }
             .article-body figure { margin-left: -10px; margin-right: -10px; }
             .article-body h2 { font-size: 1.15em; }
