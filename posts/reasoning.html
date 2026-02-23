@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Reasoning to World Models for Reliable AI | yjpark.log</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --ink-soft: #3d3d3d;
+            --ink-muted: #6b6b6b;
+            --ink-faint: #999;
+            --surface: #fefdfb;
+            --surface-warm: #f9f6f1;
+            --surface-code: #f4f1eb;
+            --accent: #c04b2d;
+            --accent-light: #f0e0d8;
+            --rule: #e2ddd5;
+            --rule-light: #eeebe5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+            line-height: 1.72;
+            color: var(--ink-soft);
+            background: var(--surface);
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 48px 28px;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection {
+            background: var(--accent-light);
+            color: var(--ink);
+        }
+
+        /* ── Header ── */
+        header {
+            margin-bottom: 56px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--rule);
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+            margin-bottom: 20px;
+        }
+        .profile-photo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 3px solid var(--rule-light);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        .header-text h1 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.85em;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+        .header-text .subtitle {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink-muted);
+            margin-bottom: 14px;
+            font-size: 0.95em;
+        }
+        .links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .links a {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.88em;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            transition: opacity 0.2s;
+        }
+        .links a:hover { opacity: 0.7; }
+
+        .secret-emoji { color: var(--surface); cursor: default; user-select: none; }
+        .secret-emoji:hover { color: inherit; }
+        .secret-emoji::after { content: ""; }
+        .secret-emoji:hover::after { content: " ⚡🚗"; }
+
+        /* ── Nav ── */
+        nav {
+            margin-bottom: 40px;
+            display: flex;
+            gap: 28px;
+        }
+        nav a {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.92em;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        nav a:hover { color: var(--ink); }
+        nav a.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink-muted);
+            text-decoration: none;
+            font-size: 0.88em;
+            font-weight: 500;
+            margin-bottom: 36px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--accent); }
+
+        /* ── Article Meta ── */
+        .article-tag {
+            display: inline-block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 4px 14px;
+            border-radius: 3px;
+            margin-bottom: 18px;
+            background: var(--accent);
+            color: #fff;
+        }
+        .article-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.25;
+            margin-bottom: 14px;
+            letter-spacing: -0.015em;
+            max-width: 640px;
+        }
+        .article-date {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink-faint);
+            font-size: 0.88em;
+            margin-bottom: 48px;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── Article Body ── */
+        .article-body {
+            max-width: 660px;
+        }
+        .article-body p {
+            color: var(--ink-soft);
+            font-size: 1.05em;
+            line-height: 1.82;
+            margin-bottom: 26px;
+        }
+        .article-body h2 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.25em;
+            font-weight: 700;
+            color: var(--ink);
+            margin-top: 52px;
+            margin-bottom: 18px;
+            letter-spacing: -0.01em;
+            position: relative;
+            padding-left: 20px;
+        }
+        .article-body h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        .article-body ol {
+            margin-bottom: 26px;
+            padding-left: 28px;
+        }
+        .article-body li {
+            color: var(--ink-soft);
+            font-size: 1.05em;
+            line-height: 1.82;
+            margin-bottom: 10px;
+        }
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .article-body a:hover { border-bottom-color: var(--accent); }
+        .article-body strong { color: var(--ink); font-weight: 600; }
+        .article-body em { font-style: italic; }
+        .article-body hr {
+            border: none;
+            border-top: 1px solid var(--rule);
+            margin: 48px 0;
+        }
+
+        /* ── Figures ── */
+        .article-body figure {
+            margin: 36px 0;
+            margin-left: -20px;
+            margin-right: -20px;
+        }
+        .article-body figure img {
+            max-width: 100%;
+            border-radius: 6px;
+            border: 1px solid var(--rule-light);
+        }
+        .article-body figure video {
+            max-width: 100%;
+            border-radius: 6px;
+            border: 1px solid var(--rule-light);
+        }
+        .article-body figure .video-embed {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 6px;
+            border: 1px solid var(--rule-light);
+        }
+        .article-body figure .video-embed iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 0;
+            border-radius: 6px;
+        }
+        .article-body figcaption {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82em;
+            color: var(--ink-faint);
+            margin-top: 12px;
+            line-height: 1.55;
+            padding: 0 20px;
+        }
+
+        /* ── Blockquote ── */
+        .article-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 18px 24px;
+            margin: 28px 0;
+            background: var(--surface-warm);
+            border-radius: 0 6px 6px 0;
+        }
+        .article-body blockquote p {
+            color: var(--ink-soft);
+            font-size: 1em;
+            margin-bottom: 0;
+            font-style: italic;
+        }
+
+        /* ── Callout box for key takeaways ── */
+        .callout {
+            background: var(--surface-warm);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 24px 28px;
+            margin: 32px 0;
+        }
+        .callout-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.72em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        .callout p {
+            font-size: 1em !important;
+            margin-bottom: 0 !important;
+            color: var(--ink-soft);
+        }
+
+        /* ── Open questions styling ── */
+        .open-question {
+            margin-bottom: 36px;
+        }
+        .open-question-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05em;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .open-question-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            color: var(--accent);
+            font-weight: 500;
+            flex-shrink: 0;
+            padding-top: 2px;
+        }
+
+        /* ── Conclusion ── */
+        .conclusion-box {
+            background: linear-gradient(135deg, var(--surface-warm) 0%, #f5efe7 100%);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 32px;
+            margin: 48px 0 32px;
+        }
+        .conclusion-box h2 {
+            margin-top: 0 !important;
+            padding-left: 0 !important;
+        }
+        .conclusion-box h2::before { display: none; }
+
+        /* ── Footnotes / References ── */
+        .footnotes {
+            margin-top: 48px;
+            padding-top: 20px;
+            border-top: 1px solid var(--rule-light);
+        }
+        .footnotes p {
+            font-size: 0.85em;
+            color: var(--ink-muted);
+            line-height: 1.65;
+            margin-bottom: 8px;
+        }
+
+        .references { margin-top: 40px; }
+        .references h2 { font-size: 1.1em; }
+        .references ul { list-style: none; padding-left: 0; }
+        .references li {
+            font-size: 0.85em;
+            color: var(--ink-muted);
+            line-height: 1.65;
+            margin-bottom: 14px;
+            padding-left: 24px;
+            position: relative;
+        }
+        .references li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* ── Footer ── */
+        footer {
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--rule);
+            text-align: center;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink-faint);
+            font-size: 0.85em;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 600px) {
+            .header-content { flex-direction: column; text-align: center; }
+            .profile-photo { width: 110px; height: 110px; }
+            .links { justify-content: center; }
+            nav { flex-wrap: wrap; gap: 16px; }
+            .article-title { font-size: 1.6em; }
+            .article-body figure { margin-left: -10px; margin-right: -10px; }
+            .article-body h2 { font-size: 1.15em; }
+        }
+
+        /* ── Reading progress bar ── */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            z-index: 999;
+            transition: width 0.1s linear;
+            width: 0%;
+        }
+
+        /* ── Subtle fade-in animation ── */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeUp 0.6s ease forwards;
+        }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .article-title { animation-delay: 0.1s; }
+        .article-date { animation-delay: 0.2s; }
+        .article-body { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <header>
+        <div class="header-content">
+            <img src="../assets/youngjinp.png" alt="Young-Jin Park" class="profile-photo">
+            <div class="header-text">
+                <h1>Young-Jin Park</h1>
+                <p class="subtitle">PhD Candidate @ MIT &bull; Graduating 2026 <span class="secret-emoji">&rarr;</span></p>
+                <div class="links">
+                    <a href="mailto:yjpark@mit.edu">Email</a>
+                    <a href="https://scholar.google.com/citations?hl=en&user=ylx5pYAAAAAJ" target="_blank">Google Scholar</a>
+                    <a href="https://github.com/young-j-park" target="_blank">GitHub</a>
+                    <a href="https://www.linkedin.com/in/young-jin-park-6761b311b/" target="_blank">LinkedIn</a>
+                    <a href="../assets/pdf/YoungJinPark_CV.pdf" target="_blank">CV</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <a href="../index.html">About</a>
+        <a href="../blog.html" class="active">yjpark.log</a>
+        <a href="../index.html#publications">Selected Publications</a>
+    </nav>
+
+    <a href="../blog.html" class="back-link">&larr; Back to yjpark.log</a>
+
+    <article>
+        <span class="article-tag">Thoughts</span>
+        <h1 class="article-title fade-in">From Reasoning to World Models for Reliable AI</h1>
+        <div class="article-date fade-in">February 23, 2026 &middot; Presented for 2.S999/IDS.22</div>
+
+        <div class="article-body fade-in">
+            <p>Almost too easily, I've become addicted to Claude Code. Not just as a coding assistant&mdash;it literally makes decisions for me. It chooses the architecture, picks the library, refactors my code, and I just hit Enter. <strong>AI models are no longer just perceiving the world; they're acting in it.</strong></p>
+
+            <p>And once an AI is making decisions rather than just predictions, the notion of "reliability" has to shift with it. <strong>It's no longer enough for an AI to simply admit when it's stumped.</strong> In high-stakes environments like autonomous driving, a system can't just throw up an error message and stop in the middle of the highway.<sup><a href="#fn1" id="ref1">1</a></sup> It needs to understand, adapt, and make (safe) decisions, even in situations it has never encountered before.</p>
+
+            <p>This post explores that shift: from reliability as epistemic awareness to reliability as robust generalization, and the emerging paradigm of reasoning and world models that makes it possible.</p>
+            <figure>
+                <img src="reasoning/idk_bot.jpeg" alt="An agent that knows what it doesn't know" style="max-width: 360px; display: block; margin: 0 auto;">
+                <figcaption>Figure 1: We are no longer satisfied with an agent that simply knows what it doesn't know. (Image generated by ChatGPT)</figcaption>
+            </figure>
+
+            <h2>The Reliability Shift: From "Knowing What You Don't Know" to Generalization</h2>
+
+            <p>Historically, AI reliability has focused on <strong>epistemic awareness</strong>: teaching models to identify when they are operating outside their training data. Techniques like anomaly detection and out-of-distribution (OOD) detection are great for knowing when to trust a model's output.</p>
+
+            <p>However, for an autonomous agent, knowing it's confused is only half the battle. The ultimate goal is <strong>scaling generalization</strong>: the ability to perform reliably on novel, unseen data. We don't just want a self-driving car to detect a rare obstacle; we want it to understand the situation and navigate around it safely.</p>
+
+            <figure>
+                <video autoplay muted loop playsinline>
+                    <source src="https://digitalassets.tesla.com/tesla-contents/video/upload/f_auto,q_auto:best/FSD-Scenarios-Desktop.mp4" type="video/mp4">
+                </video>
+                <figcaption>Figure 2: What we ultimately require for an agent is the ability to perform reliably (or at least suboptimally) on novel, unseen data as humans do. (Source: <a href="https://www.tesla.com/fsd" target="_blank">Tesla FSD</a>)</figcaption>
+            </figure>
+
+            <p>To achieve this level of reliability, we need to move beyond models that simply memorize linguistic patterns. We need agents that can transform a problem into a sequence of logical steps (i.e., operators that are generalizable and robust). This brings us to the core of the emerging paradigm: <strong>reasoning</strong>.</p>
+
+            <div class="callout">
+                <div class="callout-label">Central Thesis</div>
+                <p>This post examines the recent shift toward reliable AI through three pillars: (1) reasoning in Vision-Language-Action models, (2) the theoretical case for learning generalizable "operators," and (3) the rise of world models as rich environments for agent learning.</p>
+            </div>
+
+            <hr>
+
+            <h2>Pillar 1: Reasoning in Vision-Language-Action (VLA) Models</h2>
+
+            <p>A prime example of this recent approach is NVIDIA's <a href="https://arxiv.org/pdf/2511.00088" target="_blank"><strong>Alpamayo-R1</strong></a>, a Vision-Language-Action (VLA) model designed for <em>autonomous driving</em>. Instead of directly mapping inputs to actions, Alpamayo-R1 employs a "Chain of Causation" (CoC) reasoning process.</p>
+
+            <figure>
+                <img src="reasoning/alpamayo.png" alt="The Alpamayo-R1 pipeline">
+                <figcaption>Figure 3: The Alpamayo-R1 pipeline. (Source: Wang et al., 2025)</figcaption>
+            </figure>
+
+            <p>By breaking down a complex driving scenario into a logical chain of cause and effect, the model can better understand the "why" behind its decisions. This structured reasoning process significantly improves the agent's ability to handle long-tail, safety-critical scenarios that were previously difficult to generalize to.</p>
+
+            <figure>
+                <img src="reasoning/alpamayo_results.png" alt="Alpamayo-R1 results">
+                <figcaption>Figure 4: Alpamayo-R1 demonstrates significant improvements in tail generalization capability compared to baselines. (Source: Wang et al., 2025)</figcaption>
+            </figure>
+
+            <hr>
+
+            <h2>Pillar 2: The Theoretical Case for Learning "Operators"</h2>
+
+            <p>Why is this explicit reasoning step so crucial? Theoretical analysis of Transformer architectures provides one of the most compelling answers. A key insight from <a href="https://arxiv.org/abs/2406.06467" target="_blank">recent research</a> is that trying to learn complex problems end-to-end (without intermediate steps) is often computationally inefficient and prone to failure on out-of-distribution data. For instance, researchers found it is not trivial to teach a model multi-hop reasoning QA.<sup><a href="#fn2" id="ref2">2</a></sup></p>
+
+            <p>Consider the following example:</p>
+
+            <blockquote>
+                <p><strong>Q.</strong> Marco is taller than Patricia. Bob is taller than Marco. Sara is taller than Bob. Peter is taller than Sara. Is Marco taller than Sara?</p>
+            </blockquote>
+
+            <p>Instead of forcing a model to memorize specific answers (e.g., "No" in the previous example), research reveals we should focus on teaching it <strong>operators</strong>&mdash;the fundamental logical building blocks of reasoning. When a model learns <em>how to think</em> rather than what to answer, it can apply that knowledge to an infinite number of new situations. This is the essence of true generalization.</p>
+
+            <figure>
+                <img src="reasoning/cot.png" alt="From learning answers to learning operators" style="max-width: 360px; display: block; margin: 0 auto;">
+                <figcaption>Figure 5: The key to generalization is moving from "learning answers" to "learning operators" (logic). (Source: <a href="https://youtu.be/4iFWt06l8TE?si=_-vp6_RRf2R6R1lK&t=1278" target="_blank">Abbe, NeurIPS 2024</a>)</figcaption>
+            </figure>
+
+            <p>Therfore, it's important to teach "how" and "when" to reason, rather than "what" to reason. Consequently, the model can break down a question into logical steps that it is able to reliably solve.</p>
+
+            <hr>
+
+            <h2>Pillar 3: The Rise of World Models</h2>
+
+            <p>Another piece of the puzzle for reliable AI is giving our reasoning agents a rich playground in which to learn and test their skills. This is one of the key areas where <strong>world models</strong> come in. While the concept of simulating the world for planning and control isn't new, modern video-generation-based world models have recently garnered massive attention (see, for example, <a href="https://deepmind.google/models/genie/" target="_blank">Genie 3</a> by Google DeepMind).</p>
+
+            <p>These advanced simulators can enhance reliability by providing a more comprehensive test bed. For example, they can generate vast amounts of synthetic OOD data, such as driving in blinding rain or snow, which is crucial for robust training. Moreover, they enable on-policy training by allowing the AI agent to explore within the world model simulator.</p>
+
+            <p>Companies like <a href="https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation" target="_blank">Waymo</a> are building world model simulations that can generate out-of-distribution driving scenarios. Similarly, <a href="https://youtu.be/LFh9GAzHg1c?si=aX-d5r8FJB2fiaey&t=1173" target="_blank">Tesla</a> uses world model simulations to re-evaluate new policy models on historical issues by reproducing the scenario within the simulator.</p>
+
+            <hr>
+
+            <h2>What's Next: Open Questions</h2>
+
+            <div class="open-question">
+                <div class="open-question-title">
+                    <span class="open-question-num">01</span>
+                    Is the reasoning step really essential for self-driving?
+                </div>
+                <p>It would be valuable to explore the source of the model's performance gains in Alpamayo. Does training with reasoning fundamentally improve the backbone's latent representation of the physical world, or is the explicit test-time "Chain of Thought" generation strictly necessary for the performance boost?</p>
+
+                <p>We must evaluate whether the model can be fine-tuned or distilled to output direct actions without the reasoning steps while still maintaining its robust OOD performance. If the backbone itself has become stronger (and distillation is successful), this might indicate that collecting reasoning data is an efficient and robust way to rapidly scale up the pre-training or early SFT warm-up post-training stages. This is also important from the perspective of efficient inference, as we could opt out of reasoning steps if they turn out not to be explicitly needed during test time.</p>
+
+                <p>On the other hand, if explicit reasoning is revealed to be essential, future research may focus further on improving reasoning quality with even deeper thinking.</p>
+            </div>
+
+            <div class="open-question">
+                <div class="open-question-title">
+                    <span class="open-question-num">02</span>
+                    Bridging World Models and Reasoning VLAs
+                </div>
+                <p>In principle, the goals of World Models and Reasoning VLAs are the same. They both aim to create AI models (or backbones) that truly "understand" how the world operates. As Alibaba's <a href="https://arxiv.org/abs/2511.17502" target="_blank">RynnVLA</a> noted, next-world prediction can improve VLA performance when jointly trained. In other words, well-trained world models may serve as robust backbones for VLAs.</p>
+
+                <p>Alternatively, we can first prompt VLAs to generate reasoning along with potential future scenarios, then feed these into world models to roll out and simulate each scenario. By evaluating these rollouts based on physical feasibility and likelihood, we can make more reliable final action decisions. On a related note, this underscores the importance of building world models that not only simulate plausible futures but also provide <strong>calibrated likelihoods</strong> of their generations. For instance, if prompted to imagine a dragon flying onto the road, the model should recognize such a scenario as <em>physically infeasible</em> rather than treating it as equally plausible as realistic outcomes.</p>
+
+                <p>In a similar sense, an important question will be how to explore within the world model simulator. One of the most critical features of a world model is that it can take action inputs as prompts. As many path-planning algorithms do, we not only need a state transition model&mdash;<em>p</em>(<em>x</em><sub><em>t</em>+1</sub> | <em>x</em><sub>1:<em>t</em></sub>, <em>u</em><sub>1:<em>t</em></sub>)&mdash;but we also need an efficient method to improve the planned trajectory (e.g., via a path-integral controller) by refining the control inputs <em>u</em><sub>1:<em>t</em></sub> (iteratively).</p>
+            </div>
+
+            <figure>
+                <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/HQsQysUWOhg?si=F_ssuNFyu4wB0IHW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+                <figcaption>In 2021, I developed a <a href="https://arxiv.org/abs/2011.08345" target="_blank">framework for planning and control via representation and reinforcement learning</a> at KAIST. In the perspective of this post, this procedure can be viewed as the agent simulating multiple future state trajectories within an internal model, scoring each according to the reward, and planning the command that leads to the best-possible future. The primary challenge was to efficiently explore feasible and meaningful action spaces within this internal world model.</figcaption>
+            </figure>
+
+            <p>Note that, this is a highly relevant topic regarding test-time scaling in agentic LLMs, and I believe these questions will soon encompass physical AI as well.</p>
+
+            <hr>
+
+            <div class="conclusion-box">
+                <h2>Closing Thought</h2>
+                <p>We are witnessing a convergence: reasoning gives AI the ability to decompose novel problems, operator-learning provides the theoretical foundation for why this generalizes, and world models offer the simulation environments to train and validate these capabilities at scale. The path from "knowing what you don't know" to "handling what you've never seen" is the defining challenge for the next generation of reliable AI&mdash;and I'm excited to be working on it.</p>
+            </div>
+
+            <div class="footnotes">
+                <p id="fn1"><sup>1</sup> In fact, even in my nominal Claude experience, it's a hassle when I find Claude stopping and waiting for my confirmation (Yes/No) to proceed with actual commands. It has gotten to the point where the AI is the decision-maker and I'm the rubber stamp. <a href="#ref1">&uarr;</a></p>
+                <p id="fn2"><sup>2</sup> Of course, recent LLM models are already more than smart enough to solve IMO math problems. But remember, GPT-4 in early 2024 still failed to perform simple arithmetic calculations. <a href="#ref2">&uarr;</a></p>
+            </div>
+
+            <div class="references">
+                <h2>References</h2>
+                <ul>
+                    <li>Wang, Y., Luo, W., Bai, J., Cao, Y., Che, T., Chen, K., ... &amp; others. (2025). Alpamayo-r1: Bridging reasoning and action prediction for generalizable autonomous driving in the long tail. <em>arXiv preprint arXiv:2511.00088</em>.</li>
+                    <li>Abbe, E., Bengio, S., Lotfi, A., Sandon, C., &amp; Saremi, O. (2024). How far can transformers reason? the globality barrier and inductive scratchpad. <em>Advances in Neural Information Processing Systems, 37</em>, 27850-27895.</li>
+                    <li>Cen, J., Huang, S., Yuan, Y., Li, K., Yuan, H., Yu, C., ... &amp; others. (2025). Rynnvla-002: A unified vision-language-action and world model. <em>arXiv preprint arXiv:2511.17502</em>.</li>
+                </ul>
+            </div>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Young-Jin Park. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Reading progress bar
+        window.addEventListener('scroll', () => {
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = (window.scrollY / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+    </script>
+</body>
+</html>

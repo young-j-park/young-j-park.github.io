@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Young Jin Park</title>
+    <title>Young-Jin Park</title>
     <style>
         * {
             margin: 0;
@@ -124,16 +124,52 @@
             line-height: 1.6;
         }
 
-        .news-item {
-            margin-bottom: 15px;
+        .recent-post {
+            margin-bottom: 16px;
             padding-left: 20px;
-            border-left: 2px solid #f0f0f0;
+            border-left: 2px solid #e0e0e0;
         }
 
-        .news-date {
+        .recent-post a {
+            color: #222;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .recent-post a:hover {
+            color: #0066cc;
+        }
+
+        .recent-post .post-meta {
             color: #888;
-            font-size: 0.9em;
-            margin-bottom: 4px;
+            font-size: 0.85em;
+            margin-top: 2px;
+        }
+
+        .recent-post .post-tag {
+            display: inline-block;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 1px 7px;
+            border-radius: 12px;
+            background: #e8f0fe;
+            color: #1a56db;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .view-all {
+            display: inline-block;
+            margin-top: 12px;
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+
+        .view-all:hover {
+            text-decoration: underline;
         }
 
         .publication {
@@ -228,9 +264,9 @@
 <body>
     <header>
         <div class="header-content">
-            <img src="assets/youngjinp.png" alt="Young Jin Park" class="profile-photo">
+            <img src="assets/youngjinp.png" alt="Young-Jin Park" class="profile-photo">
             <div class="header-text">
-                <h1>Young Jin Park</h1>
+                <h1>Young-Jin Park</h1>
                 <p class="subtitle">PhD Candidate @ MIT • Graduating 2026 <span class="secret-emoji">→</span></p>
                 <div class="links">
                     <a href="mailto:yjpark0105@gmail.com">Email</a>
@@ -245,7 +281,7 @@
 
     <nav>
         <a href="#about">About</a>
-        <a href="#news">News</a>
+        <a href="blog.html">yjpark.log</a>
         <a href="#publications">Selected Publications</a>
     </nav>
 
@@ -268,24 +304,13 @@
         </div>
     </section>
 
-    <section id="news">
-        <h2>News</h2>
-        <div class="news-item">
-            <div class="news-date">Jan 2026</div>
-            <div>Paper on "Uncertainty-Aware Meta-Learning with Analytically Tractable Posterior" accepted to AISTATS 2026</div>
+    <section id="recent-posts">
+        <h2>Recent Posts</h2>
+        <div class="recent-post">
+            <a href="posts/reasoning.html">From Reasoning to World Models for Reliable AI</a>
+            <div class="post-meta">Feb 2026 <span class="post-tag" style="background:#e6f9ed;color:#16794a;">Thoughts</span></div>
         </div>
-        <div class="news-item">
-            <div class="news-date">Sep 2025</div>
-            <div>Paper on "Uncertainty Calibration of Process Reward Models" accepted to NeurIPS 2025</div>
-        </div>
-        <div class="news-item">
-            <div class="news-date">Aug 2025</div>
-            <div>Completed internship at Meta working on LLM features for Instagram ads</div>
-        </div>
-        <!-- <div class="news-item">
-            <div class="news-date">July 2024</div>
-            <div>Received Wunsch Foundation Award for excellence in graduate student research at MIT</div>
-        </div> -->
+        <a href="blog.html" class="view-all">View all posts &rarr;</a>
     </section>
 
     <section id="publications">
@@ -382,7 +407,7 @@
     </section>
 
     <footer>
-        <p>© 2025 Young Jin Park</p>
+        <p>© 2026 Young-Jin Park</p>
     </footer>
 </body>
 </html>

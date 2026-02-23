@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yjpark.log</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .header-text h1 {
+            font-size: 2em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header-text .subtitle {
+            color: #666;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        .links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .links a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        nav {
+            margin-bottom: 40px;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin-right: 25px;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: #0066cc;
+        }
+
+        nav a.active {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 4px;
+        }
+
+        .secret-emoji {
+            color: white;
+            cursor: default;
+            user-select: none;
+        }
+        .secret-emoji:hover {
+            color: inherit;
+        }
+        .secret-emoji::after {
+            content: "";
+        }
+        .secret-emoji:hover::after {
+            content: " ⚡🚗";
+        }
+
+        /* Blog-specific styles */
+        .blog-header {
+            margin-bottom: 40px;
+        }
+
+        .blog-header h2 {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .blog-header p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 28px;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .card-tag {
+            display: inline-block;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+        }
+
+        .tag-research {
+            background: #e8f0fe;
+            color: #1a56db;
+        }
+
+        .tag-directions {
+            background: #e6f9ed;
+            color: #16794a;
+        }
+
+        .tag-slides {
+            background: #fff3e0;
+            color: #c45e00;
+        }
+
+        .card-title {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .card-date {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .card-excerpt {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-photo {
+                width: 120px;
+                height: 120px;
+            }
+
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="assets/youngjinp.png" alt="Young Jin Park" class="profile-photo">
+            <div class="header-text">
+                <h1>Young Jin Park</h1>
+                <p class="subtitle">PhD Candidate @ MIT • Graduating 2026 <span class="secret-emoji">→</span></p>
+                <div class="links">
+                    <a href="mailto:yjpark0105@gmail.com">Email</a>
+                    <a href="https://scholar.google.com/citations?hl=en&user=ylx5pYAAAAAJ" target="_blank">Google Scholar</a>
+                    <a href="https://github.com/young-j-park" target="_blank">GitHub</a>
+                    <a href="https://www.linkedin.com/in/young-jin-park-6761b311b/" target="_blank">LinkedIn</a>
+                    <a href="assets/pdf/YoungJinPark_CV.pdf" target="_blank">CV</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <a href="index.html">About</a>
+        <a href="blog.html" class="active">yjpark.log</a>
+        <a href="index.html#publications">Selected Publications</a>
+    </nav>
+
+    <div class="blog-header">
+        <h2>yjpark.log</h2>
+        <p>Research reflections, new directions, and presentation notes.</p>
+    </div>
+
+    <div class="card-grid">
+        <a href="posts/reasoning.html" class="card">
+            <span class="card-tag tag-directions">Thoughts</span>
+            <div class="card-title">From Reasoning to World Models for Reliable AI</div>
+            <div class="card-date">Feb 2026</div>
+            <div class="card-excerpt">Exploring a new paradigm for reliable AI agents—moving beyond pattern matching toward systems that can reason and comprehend the physics of the world.</div>
+        </a>
+
+        <a href="#" class="card" style="opacity: 0.5; pointer-events: none;">
+            <span class="card-tag tag-directions">Directions</span>
+            <div class="card-title">Coming Soon</div>
+            <div class="card-date"></div>
+            <div class="card-excerpt">More posts on the way. Stay tuned for thoughts on new research directions and open problems.</div>
+        </a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Young Jin Park</p>
+    </footer>
+</body>
+</html>
