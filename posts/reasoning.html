@@ -520,6 +520,18 @@
 
             <p>Companies like <a href="https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation" target="_blank">Waymo</a> are building world model simulations that can generate out-of-distribution driving scenarios. Similarly, <a href="https://youtu.be/LFh9GAzHg1c?si=aX-d5r8FJB2fiaey&t=1173" target="_blank">Tesla</a> uses world model simulations to re-evaluate new policy models on historical issues by reproducing the scenario within the simulator.</p>
 
+            <figure>
+                <div style="display: flex; gap: 12px;">
+                    <video autoplay muted loop playsinline style="width: 50%; border-radius: 6px; border: 1px solid var(--rule-light);">
+                        <source src="https://storage.googleapis.com/waymo-prod-cdn/uploads/d69eb3b4ee3b5422f6ed938b9b8859b4-mutation_weather_2_sunny_og_joint.webm" type="video/webm">
+                    </video>
+                    <video autoplay muted loop playsinline style="width: 50%; border-radius: 6px; border: 1px solid var(--rule-light);">
+                        <source src="https://storage.googleapis.com/waymo-prod-cdn/uploads/3ff095e3d5d312d80b0d4fed7293ae9b-mutation_weather_2_rainy_og_joint.webm" type="video/webm">
+                    </video>
+                </div>
+                <figcaption>World models can transform driving data across diverse conditions (e.g., sunny to rainy), generating synthetic OOD scenarios that are rare in real datasets but equally critical for robust training. (Source: <a href="https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation" target="_blank">Waymo Blog</a>)</figcaption>
+            </figure>
+
             <hr>
 
             <h2>What's Next: Open Questions</h2>
