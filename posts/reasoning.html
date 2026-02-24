@@ -516,7 +516,7 @@
 
             <p>Another piece of the puzzle for reliable AI is giving our reasoning agents a rich playground in which to learn and test their skills. This is one of the key areas where <strong>world models</strong> come in. While the concept of simulating the world for planning and control isn't new, modern video-generation-based world models have recently garnered massive attention (see, for example, <a href="https://deepmind.google/models/genie/" target="_blank">Genie 3</a> by Google DeepMind).</p>
 
-            <p>These advanced simulators can enhance reliability by providing a more comprehensive test bed. For example, they can generate vast amounts of synthetic OOD data, such as driving in blinding rain or snow, which is crucial for robust training. Moreover, they enable on-policy training by allowing the AI agent to explore within the world model simulator.</p>
+            <p>These advanced simulators can enhance reliability by providing a more comprehensive test bed. For example, they can generate vast amounts of synthetic uncommon data, such as driving in blinding rain or snow, which is crucial for robust training and evaluation. Moreover, they enable on-policy training by allowing the AI agent to explore within the world model simulator.</p>
 
             <p>Companies like <a href="https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation" target="_blank">Waymo</a> are building world model simulations that can generate out-of-distribution driving scenarios. Similarly, <a href="https://youtu.be/LFh9GAzHg1c?si=aX-d5r8FJB2fiaey&t=1173" target="_blank">Tesla</a> uses world model simulations to re-evaluate new policy models on historical issues by reproducing the scenario within the simulator.</p>
 
@@ -530,6 +530,13 @@
                     </video>
                 </div>
                 <figcaption>World models can transform driving data across diverse conditions (e.g., sunny to rainy), generating synthetic OOD scenarios that are rare in real datasets but equally critical for robust training. (Source: <a href="https://waymo.com/blog/2026/02/the-waymo-world-model-a-new-frontier-for-autonomous-driving-simulation" target="_blank">Waymo Blog</a>)</figcaption>
+            </figure>
+
+            <figure>
+                <div class="video-embed">
+                    <iframe src="https://www.youtube.com/embed/LFh9GAzHg1c?si=Xzq1c9BncQDYfEPQ&amp;clip=Ugkxc_hIz2ydjI4LEIDv113Pu96UqW1A-lSQ&amp;clipt=EMusSBj9jEs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+                <figcaption>Tesla uses world model simulations to reproduce historical scenarios and re-evaluate new policy models within the simulator. (Source: <a href="https://youtu.be/LFh9GAzHg1c" target="_blank">Tesla AI Day</a>)</figcaption>
             </figure>
 
             <hr>
