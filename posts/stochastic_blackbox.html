@@ -416,9 +416,7 @@
         .article-date { animation-delay: 0.2s; }
         .article-body { animation-delay: 0.3s; }
 
-        /* -- Language visibility -- */
-        .lang-en { display: none; }
-        .lang-ko { display: block; }
+        /* -- Language visibility (initial state set inline on elements) -- */
     </style>
 </head>
 <body>
@@ -544,7 +542,7 @@
         </div>
 
         <!-- English Version -->
-        <div class="article-body fade-in lang-en" id="content-en">
+        <div class="article-body fade-in lang-en" id="content-en" style="display:none">
 
             <h2>Can You Fully Trust Code Written by an LLM?</h2>
 
