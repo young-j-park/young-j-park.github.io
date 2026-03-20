@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stochastic Blackbox | yjpark.log</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --ink-soft: #3d3d3d;
+            --ink-muted: #6b6b6b;
+            --ink-faint: #999;
+            --surface: #fefdfb;
+            --surface-warm: #f9f6f1;
+            --surface-code: #f4f1eb;
+            --accent: #c04b2d;
+            --accent-light: #f0e0d8;
+            --rule: #e2ddd5;
+            --rule-light: #eeebe5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: var(--surface);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection {
+            background: var(--accent-light);
+            color: var(--ink);
+        }
+
+        /* -- Header (matches index.html) -- */
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .header-text h1 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 2em;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+        }
+        .header-text .subtitle {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #666;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        .links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .links a {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+        .links a:hover { text-decoration: underline; }
+
+        .secret-emoji { color: var(--surface); cursor: default; user-select: none; }
+        .secret-emoji:hover { color: inherit; }
+        .secret-emoji::after { content: ""; }
+        .secret-emoji:hover::after { content: " ⚡🚗"; }
+
+        /* -- Nav (matches index.html) -- */
+        nav {
+            margin-bottom: 40px;
+        }
+        nav a {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #333;
+            text-decoration: none;
+            margin-right: 25px;
+            font-weight: 500;
+        }
+        nav a:hover { color: #0066cc; }
+        nav a.active {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 4px;
+        }
+
+        /* -- Back link -- */
+        .back-link {
+            display: inline-block;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-bottom: 32px;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* -- Language Toggle -- */
+        .lang-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            float: right;
+            margin-top: 4px;
+        }
+        .lang-toggle span {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82em;
+            color: var(--ink-muted);
+            cursor: pointer;
+            padding: 2px 0;
+            transition: color 0.2s;
+        }
+        .lang-toggle span.active-lang {
+            color: var(--ink);
+            font-weight: 600;
+        }
+        .lang-switch {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background: var(--rule);
+            border-radius: 11px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: none;
+            outline: none;
+        }
+        .lang-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .lang-switch.en::after {
+            transform: translateX(18px);
+        }
+        .lang-switch.en {
+            background: var(--accent);
+        }
+
+        /* -- Article Meta -- */
+        .article-tag {
+            display: inline-block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 4px 14px;
+            border-radius: 3px;
+            margin-bottom: 18px;
+            background: var(--accent);
+            color: #fff;
+        }
+        .article-title {
+            font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+            font-size: 2.1em;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.25;
+            margin-bottom: 14px;
+            letter-spacing: -0.015em;
+            max-width: 640px;
+        }
+        .article-date {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink-faint);
+            font-size: 0.88em;
+            margin-bottom: 48px;
+            letter-spacing: 0.01em;
+        }
+
+        /* -- Article Body -- */
+        .article-body {
+            max-width: 660px;
+            font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+            font-size: 17px;
+            line-height: 1.72;
+        }
+        .article-body.ko {
+            font-family: 'Noto Serif KR', 'Newsreader', Georgia, serif;
+        }
+        .article-body p {
+            color: var(--ink-soft);
+            font-size: 1.05em;
+            line-height: 1.82;
+            margin-bottom: 26px;
+        }
+        .article-body h2 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.25em;
+            font-weight: 700;
+            color: var(--ink);
+            margin-top: 52px;
+            margin-bottom: 18px;
+            letter-spacing: -0.01em;
+            position: relative;
+            padding-left: 20px;
+        }
+        .article-body h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        .article-body ol, .article-body ul {
+            margin-bottom: 26px;
+            padding-left: 28px;
+        }
+        .article-body li {
+            color: var(--ink-soft);
+            font-size: 1.05em;
+            line-height: 1.82;
+            margin-bottom: 10px;
+        }
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .article-body a:hover { border-bottom-color: var(--accent); }
+        .article-body strong { color: var(--ink); font-weight: 600; }
+        .article-body em { font-style: italic; }
+        .article-body hr {
+            border: none;
+            border-top: 1px solid var(--rule);
+            margin: 48px 0;
+        }
+
+        /* -- Figures -- */
+        .article-body figure {
+            margin: 36px 0;
+            margin-left: -20px;
+            margin-right: -20px;
+        }
+        .article-body figure img {
+            max-width: 100%;
+            border-radius: 6px;
+            border: 1px solid var(--rule-light);
+        }
+        .article-body figcaption {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82em;
+            color: var(--ink-faint);
+            margin-top: 12px;
+            line-height: 1.55;
+            padding: 0 20px;
+        }
+
+        /* -- Blockquote -- */
+        .article-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 18px 24px;
+            margin: 28px 0;
+            background: var(--surface-warm);
+            border-radius: 0 6px 6px 0;
+        }
+        .article-body blockquote p {
+            color: var(--ink-soft);
+            font-size: 1em;
+            margin-bottom: 0;
+            font-style: italic;
+        }
+
+        /* -- Callout box -- */
+        .callout {
+            background: var(--surface-warm);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 24px 28px;
+            margin: 32px 0;
+        }
+        .callout-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.72em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        .callout p {
+            font-size: 1em !important;
+            margin-bottom: 0 !important;
+            color: var(--ink-soft);
+        }
+
+        /* -- Conclusion -- */
+        .conclusion-box {
+            background: linear-gradient(135deg, var(--surface-warm) 0%, #f5efe7 100%);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 32px;
+            margin: 48px 0 32px;
+        }
+        .conclusion-box h2 {
+            margin-top: 0 !important;
+            padding-left: 0 !important;
+        }
+        .conclusion-box h2::before { display: none; }
+
+        /* -- Footnotes / References -- */
+        .footnotes {
+            margin-top: 48px;
+            padding-top: 20px;
+            border-top: 1px solid var(--rule-light);
+        }
+        .footnotes p {
+            font-size: 0.85em;
+            color: var(--ink-muted);
+            line-height: 1.65;
+            margin-bottom: 8px;
+        }
+
+        .references { margin-top: 40px; }
+        .references h2 { font-size: 1.1em; }
+        .references ul { list-style: none; padding-left: 0; }
+        .references li {
+            font-size: 0.85em;
+            color: var(--ink-muted);
+            line-height: 1.65;
+            margin-bottom: 14px;
+            padding-left: 24px;
+            position: relative;
+        }
+        .references li::before {
+            content: '\2192';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* -- Footer -- */
+        footer {
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--rule);
+            text-align: center;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink-faint);
+            font-size: 0.85em;
+        }
+
+        /* -- Responsive -- */
+        @media (max-width: 600px) {
+            .header-content { flex-direction: column; text-align: center; }
+            .profile-photo { width: 120px; height: 120px; }
+            .links { justify-content: center; }
+            nav a { display: block; margin: 10px 0; }
+            .article-title { font-size: 1.6em; }
+            .article-body figure { margin-left: -10px; margin-right: -10px; }
+            .article-body h2 { font-size: 1.15em; }
+        }
+
+        /* -- Reading progress bar -- */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            z-index: 999;
+            transition: width 0.1s linear;
+            width: 0%;
+        }
+
+        /* -- Subtle fade-in animation -- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeUp 0.6s ease forwards;
+        }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .article-title { animation-delay: 0.1s; }
+        .article-date { animation-delay: 0.2s; }
+        .article-body { animation-delay: 0.3s; }
+
+        /* -- Language visibility -- */
+        .lang-en { display: none; }
+        .lang-ko { display: block; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <header>
+        <div class="header-content">
+            <img src="../assets/youngjinp.png" alt="Young-Jin Park" class="profile-photo">
+            <div class="header-text">
+                <h1>Young-Jin Park</h1>
+                <p class="subtitle">PhD Candidate @ MIT &bull; Graduating 2026 <span class="secret-emoji">&rarr;</span></p>
+                <div class="links">
+                    <a href="mailto:yjpark@mit.edu">Email</a>
+                    <a href="https://scholar.google.com/citations?hl=en&user=ylx5pYAAAAAJ" target="_blank">Google Scholar</a>
+                    <a href="https://github.com/young-j-park" target="_blank">GitHub</a>
+                    <a href="https://www.linkedin.com/in/young-jin-park-6761b311b/" target="_blank">LinkedIn</a>
+                    <a href="../assets/pdf/YoungJinPark_CV.pdf" target="_blank">CV</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <a href="../index.html">About</a>
+        <a href="../blog.html" class="active">yjpark.log</a>
+        <a href="../index.html#publications">Selected Publications</a>
+    </nav>
+
+    <a href="../blog.html" class="back-link">&larr; Back to yjpark.log</a>
+
+    <article>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <span class="article-tag">Random Thoughts (아무말)</span>
+            <div class="lang-toggle">
+                <span id="langKoLabel" class="active-lang">KR</span>
+                <button class="lang-switch" id="langSwitch" aria-label="Toggle language"></button>
+                <span id="langEnLabel">EN</span>
+            </div>
+        </div>
+        <h1 class="article-title fade-in">Stochastic Blackbox</h1>
+        <div class="article-date fade-in">March 20, 2026</div>
+
+        <!-- Korean Version -->
+        <div class="article-body ko fade-in lang-ko" id="content-ko">
+
+            <h2>LLM이 써 주는 코드를 전적으로 믿어도 되나요?</h2>
+
+            <figure>
+                <img src="stochastic_blackbox/trust_kor.png" alt="나를 전적으로 믿어주셔야합니다" style="max-width: 420px; display: block; margin: 0 auto;">
+            </figure>
+
+            <p>Claude Code는 대부분의 작업을 능숙하게 처리하지만, 솔직히 평가하자면 슬쩍슬쩍 실수를 자주 하는 편입니다. 예를 들어, 한 번은 Qwen모델을 사용하여 다양한 답안을 생성하라고 했더니 몇 시간째 작업이 끝나지 않았고, 확인해 보니 batch size 1로 루프를 돌고 있었습니다. 웃픈 점은 이걸 고치라고 하면 또 금방 스스로 잘 고친다는 것입니다. 즉, 자기도 할 줄은 아는데도 (가이드 없이는) 스스로 하지는 않더라고요.</p>
+
+            <p>엄밀하게 따지자면 제가 prompt를 ambiguous하게 제공했으니, 제 잘못이죠. 그런데 그렇게 이해하려다가도, 결국 다시 의문이 들었습니다. 그럼 내가 하나하나 세세하게 prompt로 짜줘야 하나? 아니면 generate된 코드를 내가 전부 검수해야 하나? 그럴 거면 내가 왜 Claude를 쓰지?</p>
+
+            <h2>Scalable Managing</h2>
+
+            <p>NAVER와 MIT에서 인턴들을 지도할 때도 정확히 비슷한 고민을 했다는 사실이 떠올랐습니다. 완전 Junior 시절에는 제 일을 제가 직접 했고, 그때는 Claude 같은 도구도 없었으니, 제가 작성한 코드와 제가 하고 있는 일을 low-level까지 모두 이해하고 있었습니다. 하지만 인턴들과 함께 일하기 시작하면서, 그분들이 작성한 코드를 내가 하나하나 다 봐줄 수는 없다는 사실을 받아들여야 했습니다. 물론 가능은 했죠. 하지만 그것은 scalable한 협업 방식이 아니었습니다. 그렇다고 인턴의 결과물을 완전히 신뢰하는 것도 장기적으로는 좋은 방법이 아니란 것도 곧 배우게 되었습니다.</p>
+
+            <p>그 과정에서 자연스럽게 익힌 지도 방법은: 가져온 결과물에 대해 counterfactual한 질문을 던지는 것이었습니다. A 시나리오에서는 어땠는지, B에서는 어떤 결과가 나왔는지, C에서는 또 어떻게 달라지는지를 좀 더 구체적으로 묻는 방식이죠. 사실 이런 질문들에 대해서는 이미 어느 정도 답을 짐작하고 있는 경우가 많았습니다. 솔직히 말하면 결과 자체가 궁금했다기보다는, 내가 생각한 방식대로 작업했다면 나올 것이라고 예상되는 결과들이 실제로도 그렇게 나오는지를 확인하는 과정에 가까웠습니다.</p>
+
+            <p><strong>Claude에게 일을 시킬 때도 최소한 내가 그 일의 결과가 대략 어떤 모양이어야 하는지를 알고 있으면, Claude의 output을 사용하는 데 대한 reliability가 크게 올라간다는 점을 깨달았습니다.</strong> 세부적인 결과까지 완전히 예상과 같을 필요는 없습니다. 하지만 말도 안 되는 결과가 나오면, 무언가가 틀렸다는 강한 signal로 받아들이는 거죠.<sup><a href="#fn1" id="ref1">1</a></sup></p>
+
+            <hr>
+
+            <h2>Stochastic Blackbox</h2>
+
+            <p>(아직은) LLM agent를 <strong>Stochastic Blackbox Tool</strong>로 봐야 한다고 생각합니다.<sup><a href="#fn2" id="ref2">2</a></sup> 생산성을 높이기 위해 Claude를 쓰는 것이기 때문에, Claude가 적어 준 코드를 한 줄 한 줄 읽는 것은 그 의미가 퇴색됩니다. (사실 읽는다 해도 제대로 버그를 찾아낼 자신도 없습니다.) 그렇다면 차라리 LLM agent를 blackbox로 생각하고, 이 결과물의 reliability를 어떻게 검증하고 보장할 것인지 고민하는 편이 더 효율적이지 않을까요?</p>
+
+            <p>사실 이런 전략 자체가 완전히 새로운 것은 아닌 것 같습니다. 제가 Instagram Ad Ranking 팀에서 일하던 방식이 정확히 그랬습니다. 엔지니어들은 모델을 만들고, 회사는 statistically reliable한 evaluation tool을 설계해 제공합니다. 엔지니어는 internal testing을 마친 모델을 최종 evaluation tool에 넣고 score를 받습니다. 그리고 그 score가 곧 그 모델의 reliability를 대변합니다. Evaluation tool이 엔지니어들의 코드를 읽지 않죠.</p>
+
+            <hr>
+
+            <h2>Agent가 뛰어놀 수 있는 세상을 만들어주기</h2>
+
+            <p>좋은 evaluation protocol을 설계하는 일은 분명 시간이 많이 듭니다. 하지만 한 번 제대로 만들어두면, 그 이후에는 agent에게 맡길 수 있는 일의 범위를 훨씬 더 scalable하게 넓힐 수 있습니다. 그래서 결국에 느끼게 된 것은:</p>
+
+            <blockquote>
+                <p>prompt를 잘 쓰는 것도 중요하지만, 그보다 먼저 &ldquo;내가 풀고 싶은 문제가 정확히 무엇인지&rdquo;, &ldquo;잘 풀렸을 때 어떤 결과가 나와야 하는지&rdquo;를 설계하는 데 더 많은 시간과 노력을 써야 한다는 점이었습니다.</p>
+            </blockquote>
+
+            <p>또 하나 점점 더 강하게 느끼는 건, 최종 결과만 보는 것으로는 부족하다는 것입니다. intermediate result까지 함께 확인해야 합니다. 마치 RL에서 sparse reward보다 dense reward가 학습에 더 유리한 것처럼, Claude 같은 agent에게도 더 촘촘한 evaluation signal이 필요하다는 생각이 듭니다. </p>
+            
+            <p>어쩌면 Claude Code를 쓴다는 건, 내가 직접 agent를 RL시키는 일과 꽤 비슷한지도 모르겠습니다. 내가 해야 할 일은 agent가 뛰어놀 수 있는 (constrained) 환경을 설계하고, 그 안에서 작동할 reward model을 정의하고 계속 수정해 나가는 과정이 아닐까요?
+</p>
+
+            <hr>
+
+            <h2>여담</h2>
+
+            <!-- <p>한국에는 &lsquo;개떡같이 말해도 찰떡같이 알아듣는다&rsquo;라는 속담이 있습니다.<sup><a href="#fn3" id="ref3">3</a></sup> 최소한 한국에서는 나에게 주어진 임무가 명확하지 않더라도, 알아서 척척척하는 사람이 &ldquo;유능하다&rdquo;고 평가받는 것 같습니다.</p> -->
+
+            <p>회사/학교에서 매니저/PI와 일하다 보면, 가끔은 &ldquo;왜 이렇게까지 의심을 하지?&rdquo; 싶은 순간들이 있습니다. 어떤 결과를 가져가도 일단 한 번은 의심부터 하시죠. 성능이 기대 이상으로 잘 나오면 &ldquo;오, 좋다!&rdquo;보다는 &ldquo;이거 뭔가 잘못된 거 아니야?&rdquo;라는 반응이 먼저 나옵니다.</p>
+
+            <p>흥미로운 점은, 일잘러(일을 잘하는 사람)들은 이러한 질문들을 이미 예상하고 대비해 둔다는 것입니다. 중간 결과는 어떠했는지, 특정 조건에서는 어떤 양상이 나타났는지, 예외적인 상황에서는 어떻게 동작하는지와 같은 질문에 대해, &ldquo;이미 모두 검토해 보았다&rdquo;고 자연스럽게 답할 수 있는 상태를 만들어 둡니다. 단순히 최종 결과만을 제시하는 것이 아니라, 그 결과에 이르기까지의 과정과 다양한 가능성을 함께 점검해 둔 것입니다.</p>
+
+            <p>더 나아가, 이러한 사람들은 매니저의 즉각적인 질문에도 유연하게 대응할 수 있도록 코드와 실험 환경을 설계해 둡니다. 필요하다면 추가적인 분석이나 검증을 빠르게 수행할 수 있는 구조를 갖추고 있기 때문에, 평가 과정 자체를 훨씬 신속하고 효율적으로 진행할 수 있습니다. 결국 이는 단순한 준비성을 넘어, 결과에 대한 책임감과 신뢰를 스스로 확보하려는 태도에서 비롯된 것이 아닐까 싶습니다.</p>
+
+            <p> 한국에는 &lsquo;개떡같이 말해도 찰떡같이 알아듣는다&rsquo;라는 속담이 있습니다.<sup><a href="#fn3" id="ref3">3</a></sup> 마찬가지로 <a href="reasoning.html"> 지난 posting</a>에서 언급한 것처럼, 사람들도 더 이상 &ldquo;모르겠습니다!&rdquo;만 반복하는 i-don&rsquo;t-know bot을 좋아하지 않습니다. 우리는 모델이 단지 uncertainty를 잘 표현하는 것을 넘어, 나의 질문을 이해하고, 심지어 한 번도 본 적 없는 상황에서도 reliable한 decision을 내려주기를 원합니다. </p>
+            
+            <p> Claude Code가 아직은 &lsquo;일잘러&rsquo;의 단계에 오르지는 않은 것 같아서, 어느 정도는 의심하며 사용할 필요가 있습니다. 그렇다고 해서 코드를 줄 단위로 검열하듯 확인하는 방식은, 좋은 협업 방식이라고 보긴 어려운 것 같습니다.</p>
+
+            <div class="footnotes">
+                <p id="fn1"><sup>1</sup> 사실 이 approach는 내가 나의 코드의 신뢰성을 평가할 때도 종종 쓰는 방법이었습니다. 예를 들어 새로 만든 추천 시스템 모델을 테스트를 하고 있는데 offline CTR이 과도하게 높게 나왔다고 가정합시다. 이 때는 내가 대단한 모델을 개발했다고 자축하는 것 보다, 사용하면 안되는 피쳐나 user history가 학습과정에 새어들어갔구나하고 받아들이는 거죠. <a href="#ref1">&uarr;</a></p>
+                <p id="fn2"><sup>2</sup> 이 말은 2025년 12월 NeurIPS에서 <a href="https://www.linkedin.com/in/abeirami/" target="_blank">Ahmad</a>가 제게 해준 이야기입니다. <a href="#ref2">&uarr;</a></p>
+                <p id="fn3"><sup>3</sup> 흥미롭게도 영어에는 &ldquo;Ask a silly question, get a silly answer&rdquo;라는 상반된 표현이 있습니다. <a href="#ref3">&uarr;</a></p>
+            </div>
+
+            <!-- <div class="references">
+                <h2>References</h2>
+                <ul>
+                    <li>Gal, Y., &amp; Ghahramani, Z. (2016). Dropout as a Bayesian approximation: Representing model uncertainty in deep learning. <em>ICML 2016</em>.</li>
+                    <li>Lakshminarayanan, B., Pritzel, A., &amp; Blundell, C. (2017). Simple and scalable predictive uncertainty estimation using deep ensembles. <em>NeurIPS 2017</em>.</li>
+                    <li>Park, Y.-J., Wang, H., Ardeshir, S., &amp; Azizan, N. (2024). Quantifying representation reliability in self-supervised learning models. <em>UAI 2024</em>.</li>
+                    <li>Kuhn, L., Gal, Y., &amp; Farquhar, S. (2023). Semantic uncertainty: Linguistic invariances for uncertainty estimation in natural language generation. <em>ICLR 2023</em>.</li>
+                </ul>
+            </div> -->
+        </div>
+
+        <!-- English Version -->
+        <div class="article-body fade-in lang-en" id="content-en">
+
+            <h2>Can You Fully Trust Code Written by an LLM?</h2>
+
+            <figure>
+                <img src="stochastic_blackbox/trust_eng.png" alt="You need to trust me completely" style="max-width: 420px; display: block; margin: 0 auto;">
+            </figure>
+
+            <p>Claude Code handles most tasks quite well&mdash;but honestly, it still makes subtle mistakes here and there.</p>
+
+            <p>For example, I once asked it to generate diverse outputs using a Qwen model. Hours passed and the job hadn&rsquo;t finished. When I checked, it was looping with batch size 1.</p>
+
+            <p>The frustrating part? When I pointed it out, it fixed the issue immediately. In other words, it <em>knew how to do it</em>&mdash;it just didn&rsquo;t <em>think to do it</em> without guidance.</p>
+
+            <p>Strictly speaking, my prompt was ambiguous, so that&rsquo;s on me. But even accepting that, the question kept nagging at me: do I have to spell out every detail in the prompt? Or review every line of generated code myself? If so, why am I using Claude in the first place?</p>
+
+            <h2>Scalable Managing</h2>
+
+            <p>This reminded me of a nearly identical dilemma I faced while mentoring interns at NAVER and MIT.</p>
+
+            <p>Early in my career, I did everything myself&mdash;no tools like Claude existed&mdash;so I understood my code and my work down to the lowest level. But once I started working with interns, I had to accept that I couldn&rsquo;t review every line they wrote. Technically I could&mdash;but it wasn&rsquo;t scalable. And blindly trusting their output wasn&rsquo;t a sustainable strategy either.</p>
+
+            <p>What I naturally converged to was asking <strong>counterfactual questions</strong> about the work they brought back. How did things look under scenario A? What were the results for B? How did C differ? I often already had a rough sense of the answers. Honestly, it was less about curiosity and more about verification&mdash;checking whether the outcomes that <em>should</em> appear, given the approach I had in mind, actually did.</p>
+
+            <p><strong>I realized the same applies to Claude: if I at least have a rough sense of what the output should look like, the reliability of using Claude&rsquo;s output goes up significantly.</strong> The details don&rsquo;t need to match exactly. But when something clearly doesn&rsquo;t make sense, that&rsquo;s a strong signal something went wrong.<sup><a href="#fn1-en" id="ref1-en">1</a></sup></p>
+
+            <hr>
+
+            <h2>Stochastic Blackbox</h2>
+
+            <p>At least for now, I think we should treat LLM agents as <strong>Stochastic Blackbox Tools</strong>.<sup><a href="#fn2-en" id="ref2-en">2</a></sup></p>
+
+            <p>The whole point of using Claude is productivity. Reading through every line it writes defeats that purpose. (And honestly, I&rsquo;m not even confident I&rsquo;d catch all the bugs anyway.) So instead, why not embrace the blackbox view&mdash;and focus on how to <strong>evaluate and guarantee the reliability of its outputs</strong>?</p>
+
+            <p>This idea isn&rsquo;t entirely new. When I worked on the Instagram Ad Ranking team, this was exactly how things operated. Engineers built models; the company designed and provided a statistically reliable evaluation tool. You ran your model through the pipeline, got a score, and that score represented the model&rsquo;s reliability. The evaluation tool didn&rsquo;t read your code.</p>
+
+            <hr>
+
+            <h2>Building a Playground for the Agent</h2>
+
+            <p>Designing a good evaluation protocol takes time. But once it&rsquo;s in place, it massively expands what you can safely delegate to an agent. What I&rsquo;ve ultimately come to feel is:</p>
+
+            <blockquote>
+                <p>Writing good prompts matters&mdash;but even more important is investing time upfront in clearly defining what problem you&rsquo;re trying to solve, and what the output should look like when it&rsquo;s solved.</p>
+            </blockquote>
+
+            <p>Another key insight: looking only at the final output isn&rsquo;t enough&mdash;you need to inspect <strong>intermediate results</strong> too. Just like dense rewards are more effective than sparse rewards in RL, LLM agents benefit from more frequent, structured evaluation signals.</p>
+
+            <p>In that sense, using Claude Code feels a lot like doing RL on your own agent. Your job is to design a constrained environment where the agent operates, and continuously refine the reward model within it.</p>
+
+            <hr>
+
+            <h2>A Side Note</h2>
+
+            <p>If you&rsquo;ve worked with a manager or PI, you&rsquo;ve probably had this thought: <em>&ldquo;Why are they so skeptical?&rdquo;</em> No matter what result you bring, the first reaction is often doubt. If performance looks surprisingly good, instead of &ldquo;Great!&rdquo;, you hear &ldquo;Wait, is something wrong here?&rdquo;</p>
+
+            <p>Interestingly, high-performers anticipate this. They come prepared:</p>
+
+            <ul>
+                <li>What happened at each intermediate step?</li>
+                <li>How does it behave under specific conditions?</li>
+                <li>What about edge cases?</li>
+            </ul>
+
+            <p>They don&rsquo;t just present the final result&mdash;they&rsquo;ve already validated the entire process. More than that, they structure their code and experiments so they can quickly respond to follow-up questions on the spot. This isn&rsquo;t just preparedness&mdash;it&rsquo;s a mindset of taking ownership over reliability.</p>
+
+            <p>There&rsquo;s a Korean proverb: <em>&ldquo;Even if you explain it badly, a smart person understands it perfectly.&rdquo;</em><sup><a href="#fn3-en" id="ref3-en">3</a></sup> Similarly, as I noted in a <a href="reasoning.html">previous post</a>, people no longer want an i-don&rsquo;t-know bot that just repeats &ldquo;I&rsquo;m not sure!&rdquo; We want models that go beyond expressing uncertainty well&mdash;that understand our intent and make reliable decisions even in unfamiliar situations.</p>
+
+            <p>Claude Code hasn&rsquo;t quite reached the &ldquo;high-performer&rdquo; stage yet, so some degree of skepticism is still warranted. That said, auditing every line of generated code isn&rsquo;t the right collaboration model either.</p>
+
+            <div class="footnotes">
+                <p id="fn1-en"><sup>1</sup> I actually use this approach when evaluating my own code as well. For example, if the offline CTR for a newly built recommendation model comes out suspiciously high, my first reaction isn&rsquo;t celebration&mdash;it&rsquo;s suspicion. Most likely, some forbidden feature or user history has leaked into training. <a href="#ref1-en">&uarr;</a></p>
+                <p id="fn2-en"><sup>2</sup> This phrase was shared with me by <a href="https://www.linkedin.com/in/abeirami/" target="_blank">Ahmad</a> at NeurIPS in December 2025. <a href="#ref2-en">&uarr;</a></p>
+                <p id="fn3-en"><sup>3</sup> Interestingly, English has the contrasting expression: &ldquo;Ask a silly question, get a silly answer.&rdquo; <a href="#ref3-en">&uarr;</a></p>
+            </div>
+
+            <div class="references">
+                <h2>References</h2>
+                <ul>
+                    <li>Gal, Y., &amp; Ghahramani, Z. (2016). Dropout as a Bayesian approximation: Representing model uncertainty in deep learning. <em>ICML 2016</em>.</li>
+                    <li>Lakshminarayanan, B., Pritzel, A., &amp; Blundell, C. (2017). Simple and scalable predictive uncertainty estimation using deep ensembles. <em>NeurIPS 2017</em>.</li>
+                    <li>Park, Y.-J., Wang, H., Ardeshir, S., &amp; Azizan, N. (2024). Quantifying representation reliability in self-supervised learning models. <em>UAI 2024</em>.</li>
+                    <li>Kuhn, L., Gal, Y., &amp; Farquhar, S. (2023). Semantic uncertainty: Linguistic invariances for uncertainty estimation in natural language generation. <em>ICLR 2023</em>.</li>
+                </ul>
+            </div>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Young-Jin Park. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Reading progress bar
+        window.addEventListener('scroll', () => {
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = (window.scrollY / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Language toggle
+        const langSwitch = document.getElementById('langSwitch');
+        const koLabel = document.getElementById('langKoLabel');
+        const enLabel = document.getElementById('langEnLabel');
+        const contentKo = document.getElementById('content-ko');
+        const contentEn = document.getElementById('content-en');
+
+        let currentLang = 'ko';
+
+        function setLang(lang) {
+            currentLang = lang;
+            if (lang === 'en') {
+                langSwitch.classList.add('en');
+                koLabel.classList.remove('active-lang');
+                enLabel.classList.add('active-lang');
+                contentKo.style.display = 'none';
+                contentEn.style.display = 'block';
+                document.documentElement.lang = 'en';
+            } else {
+                langSwitch.classList.remove('en');
+                koLabel.classList.add('active-lang');
+                enLabel.classList.remove('active-lang');
+                contentKo.style.display = 'block';
+                contentEn.style.display = 'none';
+                document.documentElement.lang = 'ko';
+            }
+        }
+
+        langSwitch.addEventListener('click', () => {
+            setLang(currentLang === 'ko' ? 'en' : 'ko');
+        });
+        koLabel.addEventListener('click', () => setLang('ko'));
+        enLabel.addEventListener('click', () => setLang('en'));
+    </script>
+</body>
+</html>
