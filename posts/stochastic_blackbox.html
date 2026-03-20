@@ -521,6 +521,11 @@
             
             <p> Claude Code가 아직은 &lsquo;일잘러&rsquo;의 단계에 오르지는 않은 것 같아서, 어느 정도는 의심하며 사용할 필요가 있습니다. 그렇다고 해서 코드를 줄 단위로 검열하듯 확인하는 방식은, 좋은 협업 방식이라고 보긴 어려운 것 같습니다.</p>
 
+            <figure>
+                <img src="stochastic_blackbox/my_claude.png" alt="LLM이 써 주는 코드를 전적으로 믿어도 되나요?" style="max-width: 420px; display: block; margin: 0 auto;">
+                <figcaption style="text-align: center;">LLM이 써 주는 코드를 전적으로 믿어도 되나요?</figcaption>
+            </figure>
+
             <div class="footnotes">
                 <p id="fn1"><sup>1</sup> 사실 이 approach는 내가 나의 코드의 신뢰성을 평가할 때도 종종 쓰는 방법이었습니다. 예를 들어 새로 만든 추천 시스템 모델을 테스트를 하고 있는데 offline CTR이 과도하게 높게 나왔다고 가정합시다. 이 때는 내가 대단한 모델을 개발했다고 자축하는 것 보다, 사용하면 안되는 피쳐나 user history가 학습과정에 새어들어갔구나하고 받아들이는 거죠. <a href="#ref1">&uarr;</a></p>
                 <p id="fn2"><sup>2</sup> 이 말은 2025년 12월 NeurIPS에서 <a href="https://www.linkedin.com/in/abeirami/" target="_blank">Ahmad</a>가 제게 해준 이야기입니다. <a href="#ref2">&uarr;</a></p>
@@ -608,6 +613,11 @@
             <p>There&rsquo;s a Korean proverb: <em>&ldquo;Even if you explain it badly, a smart person understands it perfectly.&rdquo;</em><sup><a href="#fn3-en" id="ref3-en">3</a></sup> Similarly, as I noted in a <a href="reasoning.html">previous post</a>, people no longer want an i-don&rsquo;t-know bot that just repeats &ldquo;I&rsquo;m not sure!&rdquo; We want models that go beyond expressing uncertainty well&mdash;that understand our intent and make reliable decisions even in unfamiliar situations.</p>
 
             <p>Claude Code hasn&rsquo;t quite reached the &ldquo;high-performer&rdquo; stage yet, so some degree of skepticism is still warranted. That said, auditing every line of generated code isn&rsquo;t the right collaboration model either.</p>
+
+            <figure>
+                <img src="stochastic_blackbox/my_claude.png" alt="Can You Fully Trust Code Written by an LLM?" style="max-width: 420px; display: block; margin: 0 auto;">
+                <figcaption style="text-align: center;">Can You Fully Trust Code Written by an LLM?</figcaption>
+            </figure>
 
             <div class="footnotes">
                 <p id="fn1-en"><sup>1</sup> I actually use this approach when evaluating my own code as well. For example, if the offline CTR for a newly built recommendation model comes out suspiciously high, my first reaction isn&rsquo;t celebration&mdash;it&rsquo;s suspicion. Most likely, some forbidden feature or user history has leaked into training. <a href="#ref1-en">&uarr;</a></p>
