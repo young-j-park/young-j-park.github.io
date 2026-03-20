@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -460,7 +460,7 @@
         <div class="article-date fade-in">March 20, 2026</div>
 
         <!-- Korean Version -->
-        <div class="article-body ko fade-in lang-ko" id="content-ko">
+        <div class="article-body ko fade-in lang-ko" id="content-ko" style="display:none">
 
             <h2>LLM이 써 주는 코드를 전적으로 믿어도 되나요?</h2>
 
@@ -542,7 +542,7 @@
         </div>
 
         <!-- English Version -->
-        <div class="article-body fade-in lang-en" id="content-en" style="display:none">
+        <div class="article-body fade-in lang-en" id="content-en">
 
             <h2>Can You Fully Trust Code Written by an LLM?</h2>
 
@@ -655,7 +655,7 @@
         const contentEn = document.getElementById('content-en');
 
         const urlLang = new URLSearchParams(window.location.search).get('lang');
-        let currentLang = (urlLang === 'en') ? 'en' : 'ko';
+        let currentLang = (urlLang === 'ko') ? 'ko' : 'en';
 
         function setLang(lang) {
             currentLang = lang;
