@@ -656,7 +656,8 @@
         const contentKo = document.getElementById('content-ko');
         const contentEn = document.getElementById('content-en');
 
-        let currentLang = 'ko';
+        const urlLang = new URLSearchParams(window.location.search).get('lang');
+        let currentLang = (urlLang === 'en') ? 'en' : 'ko';
 
         function setLang(lang) {
             currentLang = lang;
@@ -676,6 +677,8 @@
                 document.documentElement.lang = 'ko';
             }
         }
+
+        setLang(currentLang);
 
         langSwitch.addEventListener('click', () => {
             setLang(currentLang === 'ko' ? 'en' : 'ko');
