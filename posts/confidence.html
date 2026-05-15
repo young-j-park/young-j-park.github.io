@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs: Uncertainty, Confidence, and Hallucination | yjpark.log</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --ink-soft: #3d3d3d;
+            --ink-muted: #6b6b6b;
+            --ink-faint: #999;
+            --surface: #fefdfb;
+            --surface-warm: #f9f6f1;
+            --surface-code: #f4f1eb;
+            --accent: #1a56db;
+            --accent-light: #e8f0fe;
+            --rule: #e2ddd5;
+            --rule-light: #eeebe5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: var(--surface);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection {
+            background: var(--accent-light);
+            color: var(--ink);
+        }
+
+        /* ── Header (matches index.html) ── */
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .header-text h1 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 2em;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+        }
+        .header-text .subtitle {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #666;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        .links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .links a {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+        .links a:hover { text-decoration: underline; }
+
+        .secret-emoji { color: var(--surface); cursor: default; user-select: none; }
+        .secret-emoji:hover { color: inherit; }
+        .secret-emoji::after { content: ""; }
+        .secret-emoji:hover::after { content: " ⚡🚗"; }
+
+        /* ── Nav (matches index.html) ── */
+        nav {
+            margin-bottom: 40px;
+        }
+        nav a {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #333;
+            text-decoration: none;
+            margin-right: 25px;
+            font-weight: 500;
+        }
+        nav a:hover { color: #0066cc; }
+        nav a.active {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 4px;
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            display: inline-block;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-bottom: 32px;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* ── Article Meta ── */
+        .article-tag {
+            display: inline-block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 4px 14px;
+            border-radius: 3px;
+            margin-bottom: 18px;
+            background: var(--accent);
+            color: #fff;
+        }
+        .article-title {
+            font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+            font-size: 2.1em;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.25;
+            margin-bottom: 14px;
+            letter-spacing: -0.015em;
+            max-width: 640px;
+        }
+        .article-date {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink-faint);
+            font-size: 0.88em;
+            margin-bottom: 48px;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── Draft banner ── */
+        .draft-banner {
+            background: var(--surface-warm);
+            border: 1px dashed var(--accent);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 36px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9em;
+            color: var(--ink-soft);
+        }
+        .draft-banner strong {
+            color: var(--accent);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        /* ── Article Body ── */
+        .article-body {
+            max-width: 660px;
+            font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+            font-size: 17px;
+            line-height: 1.72;
+        }
+        .article-body p {
+            color: var(--ink-soft);
+            font-size: 1.05em;
+            line-height: 1.82;
+            margin-bottom: 26px;
+        }
+        .article-body h2 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.25em;
+            font-weight: 700;
+            color: var(--ink);
+            margin-top: 52px;
+            margin-bottom: 18px;
+            letter-spacing: -0.01em;
+            position: relative;
+            padding-left: 20px;
+        }
+        .article-body h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        .article-body ol, .article-body ul {
+            margin-bottom: 26px;
+            padding-left: 28px;
+        }
+        .article-body li {
+            color: var(--ink-soft);
+            font-size: 1.05em;
+            line-height: 1.82;
+            margin-bottom: 10px;
+        }
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .article-body a:hover { border-bottom-color: var(--accent); }
+        .article-body strong { color: var(--ink); font-weight: 600; }
+        .article-body em { font-style: italic; }
+        .article-body hr {
+            border: none;
+            border-top: 1px solid var(--rule);
+            margin: 48px 0;
+        }
+
+        /* ── Callout box for key takeaways ── */
+        .callout {
+            background: var(--surface-warm);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            padding: 24px 28px;
+            margin: 32px 0;
+        }
+        .callout-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.72em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        .callout p {
+            font-size: 1em !important;
+            margin-bottom: 0 !important;
+            color: var(--ink-soft);
+        }
+
+        /* ── FAQ items ── */
+        .faq-item {
+            margin: 0 0 36px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--rule-light);
+        }
+        .faq-item:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .faq-question {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05em;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.5;
+            margin-bottom: 6px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .faq-q-prefix {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: var(--accent);
+            font-weight: 500;
+            flex-shrink: 0;
+            padding-top: 1px;
+        }
+        .faq-asker {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82em;
+            color: var(--ink-faint);
+            margin-bottom: 14px;
+            margin-left: 28px;
+            font-style: italic;
+        }
+        .faq-answer p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        /* ── Footer ── */
+        footer {
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--rule);
+            text-align: center;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink-faint);
+            font-size: 0.85em;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 600px) {
+            .header-content { flex-direction: column; text-align: center; }
+            .profile-photo { width: 120px; height: 120px; }
+            .links { justify-content: center; }
+            nav a { display: block; margin: 10px 0; }
+            .article-title { font-size: 1.6em; }
+            .article-body h2 { font-size: 1.15em; }
+        }
+
+        /* ── Reading progress bar ── */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            z-index: 999;
+            transition: width 0.1s linear;
+            width: 0%;
+        }
+
+        /* ── Subtle fade-in animation ── */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeUp 0.6s ease forwards;
+        }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .article-title { animation-delay: 0.1s; }
+        .article-date { animation-delay: 0.2s; }
+        .article-body { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <header>
+        <div class="header-content">
+            <img src="../assets/youngjinp.png" alt="Young-Jin Park" class="profile-photo">
+            <div class="header-text">
+                <h1>Young-Jin Park</h1>
+                <p class="subtitle">Building reliable AI &bull; MIT PhD '26 &bull; Ex-Meta, NAVER <span class="secret-emoji">&rarr;</span></p>
+                <div class="links">
+                    <a href="https://scholar.google.com/citations?hl=en&user=ylx5pYAAAAAJ" target="_blank">Google Scholar</a>
+                    <a href="https://github.com/young-j-park" target="_blank">GitHub</a>
+                    <a href="https://www.linkedin.com/in/young-jin-park-6761b311b/" target="_blank">LinkedIn</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <a href="../index.html">About</a>
+        <a href="../blog.html" class="active">yjpark.log</a>
+        <a href="../index.html#publications">Selected Publications</a>
+    </nav>
+
+    <a href="../blog.html" class="back-link">&larr; Back to yjpark.log</a>
+
+    <article>
+        <span class="article-tag">Research</span>
+        <h1 class="article-title fade-in">FAQs: Uncertainty, Confidence, and Hallucination</h1>
+        <div class="article-date fade-in">May 2026</div>
+
+        <div class="article-body fade-in">
+            <p>The Q&amp;As below are adapted from discussions with my thesis committee members, <strong>Prof. John Leonard</strong> and <strong>Prof. Phillip Isola</strong>&mdash;many thanks to both for the sharp pushback that shaped these answers.</p>
+
+            <hr>
+
+            <h2>Foundations: vocabulary and the supervised &rarr; generative bridge</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>What is <em>uncertainty quantification</em>, and what is it for?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> Uncertainty quantification (UQ) is the practice of estimating what a model <em>doesn&rsquo;t</em> know. It typically separates <strong>aleatoric</strong> uncertainty (irreducible noise inherent to the data) from <strong>epistemic</strong> uncertainty (reducible with more data or a better model). UQ is the substrate for downstream behaviors that depend on knowing when to trust the model: abstention, active learning, OOD detection, and risk-aware decision-making.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>What about <em>confidence</em> and <em>calibration</em>?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> <strong>Confidence</strong> is what a model <em>reports</em> as its belief in an answer&mdash;a softmax probability, a logit margin, a verbalized self-rating. <strong>Calibration</strong> is the alignment between confidence and correctness: a calibrated model that says &ldquo;80% confident&rdquo; is right roughly 80% of the time. Miscalibration cuts both ways&mdash;<em>overconfidence</em> (claims 95%, right 60%) and <em>underconfidence</em>&mdash;and they fail in very different ways downstream.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>Are these ideas applicable to modern LLMs&mdash;and can they help detect hallucinations?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> Yes, but the <em>unit of prediction</em> changes. Classical calibration is defined over labeled examples; LLMs generate sequences, and the right notion of confidence depends on what we care about&mdash;token-level likelihood, span correctness, factuality of a claim, or correctness of a multi-step reasoning trace. Hallucination is what miscalibration looks like in this regime: high confidence in content that has no grounding in evidence. Framing hallucination as a <em>calibration failure</em> (rather than a knowledge failure alone) reshapes the fix&mdash;from &ldquo;teach the model more facts&rdquo; to &ldquo;teach the model to express uncertainty when it ought to.&rdquo;</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <h2>Cost: how expensive is calibration?</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>What is the &ldquo;cost&rdquo; of calibrating&mdash;and are calibration datasets generally available?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> The cost has two layers: <strong>data</strong> (curated calibration sets, often domain-specific) and <strong>compute</strong> (post-hoc temperature scaling is cheap; learned calibrators or rerankers are more expensive). For mainstream tasks (math reasoning, MMLU-style QA) calibration data is reasonably available; for niche or non-math domains it isn&rsquo;t, and that gap is real.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>What&rsquo;s the scaling factor in cost/complexity&mdash;is the relationship linear?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> Discuss empirical scaling of calibration cost vs. model size and dataset size. Note where the relationship looks roughly linear (in-distribution) and where it breaks (long-tail, OOD, agentic regimes).</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>Could larger, better models be better calibrated out of the box&mdash;or at least cheaper to post-calibrate?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> Mixed evidence: pretraining loss correlates with calibration, but instruction-tuning and RLHF often degrade it. There&rsquo;s a real possibility that frontier models can be calibrated with much less data, but it&rsquo;s not guaranteed&mdash;and it depends on whether post-training preserves the underlying probability structure.</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <h2>Generalization: does calibration travel?</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>Does calibration generalize across tasks?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> Often surprisingly poorly. A model calibrated on math reasoning is not automatically calibrated on free-form QA. Discuss task-conditional calibration and what we observed in the <a href="https://young-j-park.github.io/know-what-you-dont-know/" target="_blank">PRM work</a>.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>Are larger models easier to calibrate than smaller ones?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> Sometimes&mdash;better-trained representations seem to make calibration tractable, but post-training (especially RLHF) can introduce systematic overconfidence regardless of size. Not just a scale story; a story about <em>what was optimized for</em>.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>How might this approach apply to more general vision tasks?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> Connect to the <a href="https://jiyoungbyun.github.io/vlm-hac" target="_blank">Medical VQA work</a> on overconfidence and calibration in VLMs. The underlying calibration techniques transfer, but the labeling and uncertainty structure of vision differs&mdash;discuss what does and doesn&rsquo;t carry over.</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <h2>Hallucination: the industry question</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>Hallucination is the topic industry worries about most. Can your techniques help reduce or identify hallucinations?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> Yes&mdash;but with caveats. A well-calibrated confidence signal lets us flag likely hallucinations at inference time (abstain or escalate) and route hard cases. It doesn&rsquo;t make generation more truthful, but it makes the system <em>honest about its own uncertainty</em>, which is what most production deployments actually need.</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <h2>Connections: control, robotics, and beyond</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-q-prefix">Q.</span>
+                    <span>Is there a connection to safe learning-based control of dynamical systems&mdash;e.g., Chuchu&rsquo;s work?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><em>[Placeholder]</em> Yes&mdash;calibrated uncertainty is a building block for safe control under learned dynamics. Conformal prediction, calibrated process reward models, and reachability-based safety filters all share the same underlying need: a trustworthy confidence signal at decision time. Tie back to <a href="reasoning.html">world models for reliable AI</a>.</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <h2>Caveats: what we don&rsquo;t yet know</h2>
+
+            <p>A reminder I keep coming back to: <em>don&rsquo;t be overconfident in your conclusions.</em> There are real open questions about scaling/cost tradeoffs, the availability of appropriate training data for non-math tasks, and how far calibration generalizes. Some of what looks like progress today is contingent on benchmark structure, and it isn&rsquo;t obvious how much of it survives contact with messier production data.</p>
+
+            <p>This post is a snapshot of where I&rsquo;d push on next, not a victory lap. <em>[Placeholder&mdash;flesh out the open questions and what would change my mind.]</em></p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Young-Jin Park. All rights reserved.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = (window.scrollY / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+    </script>
+</body>
+</html>
